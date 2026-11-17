@@ -14,7 +14,8 @@
           <div class="hero-photo-col">
             <div class="photo-frame">
               <div class="photo-ring"></div>
-              <img src="/images/TENG_SOPHANITH.JPG" alt="Teng Sophanith - Software Developer" class="profile-photo" />
+              <img src="/images/TENG_SOPHANITH.JPG" alt="Teng Sophanith - Junior Android Developer"
+                class="profile-photo" />
               <div class="photo-badge">
                 <i class="bi bi-code-slash"></i>
               </div>
@@ -34,13 +35,13 @@
               </h1>
               <div class="hero-role">
                 <span class="role-prefix">&lt;</span>
-                <span class="role-text" ref="typewriterEl">{{ displayText }}<span class="cursor">|</span></span>
+                <span class="role-text">{{ displayText }}<span class="cursor">|</span></span>
                 <span class="role-prefix">/&gt;</span>
               </div>
               <p class="hero-desc">
-                Results-driven Full-Stack Software Developer with a proven track record of building
-                scalable web applications. Proficient in PHP, Java, and JavaScript ecosystems with
-                hands-on experience in creating POS systems and student management portals.
+                Aspiring Junior Android Developer with a foundation in programming and application
+                development. Familiar with Kotlin, Flutter, and Dart, with hands-on experience building
+                web projects using PHP, JavaScript, Vue.js, React.js, Laravel, and MySQL.
               </p>
               <div class="hero-actions">
                 <a href="mailto:tengsophanith@gmail.com" class="btn-primary-custom">
@@ -91,7 +92,7 @@
           <div v-for="(edu, index) in education" :key="edu.title" class="timeline-item">
             <div class="timeline-marker">
               <div class="marker-dot"></div>
-              <div v-if="index < education.length - 2" class="marker-line"></div>
+              <div v-if="index < education.length - 1" class="marker-line"></div>
             </div>
             <div class="timeline-content glass-card">
               <div class="timeline-header">
@@ -130,7 +131,7 @@
             <div class="project-tech">
               <span v-for="tech in project.tech" :key="tech" class="tech-tag">{{ tech }}</span>
             </div>
-            <a :href="project.link" target="_blank" rel="noopener noreferrer" class="project-link">
+            <a v-if="project.link" :href="project.link" target="_blank" rel="noopener noreferrer" class="project-link">
               <span>View Live</span>
               <i class="bi bi-arrow-up-right"></i>
             </a>
@@ -145,22 +146,37 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 
 // Typewriter effect
-const roles = ['Full-Stack Developer', 'Software Engineer', 'Web Developer', 'Problem Solver'];
+const roles = ['Junior Android Developer', 'Flutter Developer', 'Web Developer', 'Problem Solver'];
 const displayText = ref('');
 let roleIndex = 0;
 let charIndex = 0;
 let isDeleting = false;
 let typingInterval = null;
+let pauseTimeout = null;
+
+function clearTypingTimers() {
+  if (typingInterval) {
+    clearInterval(typingInterval);
+    typingInterval = null;
+  }
+
+  if (pauseTimeout) {
+    clearTimeout(pauseTimeout);
+    pauseTimeout = null;
+  }
+}
 
 function typeEffect() {
   const currentRole = roles[roleIndex];
+
   if (!isDeleting) {
     displayText.value = currentRole.substring(0, charIndex + 1);
     charIndex++;
+
     if (charIndex === currentRole.length) {
       isDeleting = true;
-      clearInterval(typingInterval);
-      setTimeout(() => {
+      clearTypingTimers();
+      pauseTimeout = setTimeout(() => {
         typingInterval = setInterval(typeEffect, 40);
       }, 2000);
       return;
@@ -168,11 +184,12 @@ function typeEffect() {
   } else {
     displayText.value = currentRole.substring(0, charIndex - 1);
     charIndex--;
+
     if (charIndex === 0) {
       isDeleting = false;
       roleIndex = (roleIndex + 1) % roles.length;
-      clearInterval(typingInterval);
-      setTimeout(() => {
+      clearTypingTimers();
+      pauseTimeout = setTimeout(() => {
         typingInterval = setInterval(typeEffect, 80);
       }, 500);
       return;
@@ -185,7 +202,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  if (typingInterval) clearInterval(typingInterval);
+  clearTypingTimers();
 });
 
 function scrollToProjects() {
@@ -195,80 +212,96 @@ function scrollToProjects() {
 // Skills Data
 const skills = ref([
   {
+    name: 'Mobile Development',
+    icon: 'bi bi-phone',
+    gradient: 'linear-gradient(135deg, #00e5a0, #00b87c)',
+    desc: 'Learning to build cross-platform and Android apps with a focus on clean, usable interfaces.',
+    tags: ['Flutter', 'Dart', 'Kotlin'],
+  },
+  {
     name: 'Frontend Development',
     icon: 'bi bi-palette',
     gradient: 'linear-gradient(135deg, #00b4d8, #0077b6)',
     desc: 'Creating responsive, modern user interfaces with clean code and smooth interactions.',
-    tags: ['HTML/CSS', 'JavaScript', 'Vue.js', 'Bootstrap'],
+    tags: ['HTML/CSS', 'JavaScript', 'Vue.js', 'React.js', 'Bootstrap'],
   },
   {
-    name: 'Backend Development',
+    name: 'Backend & Tools',
     icon: 'bi bi-hdd-stack',
     gradient: 'linear-gradient(135deg, #7b68ee, #5a4fcf)',
-    desc: 'Building robust server-side applications with secure APIs and database management.',
-    tags: ['PHP', 'Java', 'C#', 'SQL'],
-  },
-  {
-    name: 'Tools & Workflow',
-    icon: 'bi bi-gear-wide-connected',
-    gradient: 'linear-gradient(135deg, #00e5a0, #00b87c)',
-    desc: 'Leveraging modern dev tools for efficient development, version control, and deployment.',
-    tags: ['Git', 'VS Code', 'MySQL', 'Vite'],
+    desc: 'Building server-side applications with databases, plus tools for development and design.',
+    tags: ['PHP', 'Laravel', 'Node.js', 'C#', '.NET', 'MySQL', 'Docker', 'Photoshop', 'Illustrator'],
   },
 ]);
 
 // Education Data
 const education = ref([
   {
-    title: 'General English Program (GEP)',
-    institution: 'ISS School of Phnom Penh',
+    title: 'Computer Science',
+    institution: 'NPIC — National Polytechnic Institute of Cambodia',
     period: '2023 — Present',
     current: true,
-    desc: 'Comprehensive 12-level English curriculum, currently placed in the Advanced class.',
+    desc: 'Completed Foundation Year One (Dec 2024). Studying programming, databases, and application development.',
   },
   {
-    title: 'Year 3 — Computer Science',
-    institution: 'NPIC — National Polytechnic Institute of Cambodia',
-    period: '2024 — Present',
+    title: 'General English Program',
+    institution: 'International Standard School (ISS)',
+    period: '2023 — Present',
     current: true,
-    desc: 'Advanced application logic, OOP with Java, server-side scripting in PHP, and SQL database management.',
+    desc: 'Earned the Upper-Intermediate Certificate (July 2025).',
   },
   {
-    title: 'High School Diploma',
+    title: 'Short-Term Professional Development',
+    institution: 'Phnom Penh Teacher Education College',
+    period: 'Jul — Oct 2024',
+    current: false,
+    desc: 'Completed a short-term professional development program (certificate issued Oct 2024).',
+  },
+  {
+    title: 'High School',
     institution: 'Hun Sen New Phnom Penh High School',
     period: '2020 — 2023',
     current: false,
-    desc: 'Graduated with a focus on science and mathematics, building a strong analytical foundation.',
+    desc: 'Completed secondary and high school education.',
   },
 ]);
 
 // Projects Data
 const projects = ref([
   {
-    title: 'NPIC Student Portal',
+    title: 'Full-Stack Chat System',
+    type: 'Full-Stack Web App',
+    icon: 'bi bi-chat-dots',
+    gradient: 'linear-gradient(135deg, #00e5a0, #7b68ee)',
+    desc: 'A full-stack chat application with a Laravel backend, Vue.js frontend, MySQL storage, and a Docker development environment.',
+    tech: ['Laravel', 'Vue.js', 'MySQL', 'Docker'],
+    link: '', // add a GitHub or live link when you have one
+  },
+  {
+    title: 'NPIC Student Management System',
     type: 'Full-Stack Web App',
     icon: 'bi bi-mortarboard',
     gradient: 'linear-gradient(135deg, #00b4d8, #7b68ee)',
-    desc: 'A comprehensive student management portal featuring a secure login system, role-based access control, and interactive user dashboards.',
-    tech: ['PHP', 'MySQL', 'Bootstrap', 'JavaScript'],
+    desc: 'A student information system for entering, displaying, and managing student records, with PHP/MySQL logic and React.js components in parts of the UI.',
+    tech: ['PHP', 'MySQL', 'React.js', 'JavaScript'],
     link: 'https://npicstudent.lovestoblog.com/npicstudent/?page=login',
   },
   {
-    title: 'Library System',
+    title: 'To-Do List Application',
     type: 'Full-Stack Web App',
-    icon: 'bi bi-book',
+    icon: 'bi bi-check2-square',
     gradient: 'linear-gradient(135deg, #7b68ee, #e040fb)',
-    desc: 'An online library management system facilitating book tracking, inventory management, and user borrowing functionalities.',
-    tech: ['PHP', 'MySQL', 'HTML/CSS', 'JavaScript'],
-    link: 'https://librarysystemsfree.infinityfreeapp.com/library_system/index.php?page=login',
+    desc: 'A task manager with full CRUD: add, update, and delete tasks, with an interactive JavaScript front end.',
+    tech: ['PHP', 'MySQL', 'JavaScript', 'CSS'],
+    link: '',
   },
   {
     title: 'Emilia Computer Store',
     type: 'Frontend Project',
     icon: 'bi bi-display',
     gradient: 'linear-gradient(135deg, #00e5a0, #00b4d8)',
-    desc: 'A responsive frontend storefront demonstrating clean UI design, responsive layouts, and structured HTML/CSS implementation.',
-    tech: ['HTML', 'CSS', 'JavaScript', 'Responsive'],
+    desc: 'A responsive e-commerce storefront interface with product displays and clear page layouts.',
+    tech: ['HTML', 'CSS'],
     link: 'https://sophanithteng.github.io/emiliacomputerstore.githu.io/',
   },
 ]);
@@ -725,7 +758,7 @@ const projects = ref([
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 }
 
